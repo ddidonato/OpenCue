@@ -478,3 +478,41 @@ class CueResizeHandle(QtWidgets.QWidget):
         if self._resizing:
             delta = int(event.globalY() - self._pos)
             self._target.setFixedHeight(max(self._originalMinHeight, self._originalHeight+delta))
+
+
+class CueFileBrowserLineEdit(CueLabelLineEdit):
+    """Container widget that contains a lineedit and label."""
+
+    def __init__(self, labelText=None, defaultText='', tooltip=None, validators=None,
+                 completers=None, parent=None, selectFolder=False, fileTypes=[]):
+        self.fileBrowseButton = QtWidgets.QPushButton('...')
+        self.fileBrowseButton.setFixedWidth(24)
+        self._selectFolder = selectFolder
+        self._fileTypes = fileTypes
+        self.frameRange = None
+        super(CueFileBrowserLineEdit, self).__init__(labelText=labelText, defaultText=defaultText, tooltip=tooltip,
+                 validators=validators,completers=completers, parent=parent)
+
+    def setupUi(self):
+        super(CueFileBrowserLineEdit,self).setupUi()
+        self.lineEdit.setReadOnly(True)
+        self.mainLayout.addWidget(self.fileBrowseButton, 1, 5, 1, 1)
+
+    def setupConnections(self):
+        super(CueFileBrowserLineEdit, self).setupConnections()
+        self.fileBrowseButton.clicked.connect(self.handleFileButtonClick)
+
+    def handleFileButtonClick(self):
+        path = None
+        if self._selectFolder:
+            path = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder")
+        else:
+            fileType = 'All Files (*.*)'
+            if len(self._fileTypes) > 0:
+                file_string_list = ["*.{0}".format(file_type) for file_type in self._fileTypes]
+                fileType = "Custom ({})".format(' '.join(file_string_list))
+            path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select file", None, fileType)
+        if path:
+            if path == self.text():
+                self.lineEdit.textChanged.emit(self.text())
+            self.setText(path)
