@@ -439,3 +439,42 @@ class CueMessageBox(QtWidgets.QMessageBox):
         top = (desktopSize.height() / 2) - (size.height() / 2)
         left = (desktopSize.width() / 2) - (size.width() / 2)
         self.move(left, top)
+
+
+class CueResizeHandle(QtWidgets.QWidget):
+    def __init__(self, target, parent=None):
+        super(CueResizeHandle, self).__init__(parent)
+        self.setAccessibleName('cueResizeHandle')
+        self.setFixedHeight(8)
+        self.setCursor(QtCore.Qt.SizeVerCursor)
+        self._target = target
+        self._resizing = False
+        self._pos = None
+        self._originalHeight = None
+        self._originalMinHeight = self._target.minimumHeight()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.setMouseTracking(True)
+        self.mainLayout = QtWidgets.QVBoxLayout()
+        self.mainLayout.setAlignment(QtCore.Qt.AlignVCenter)
+        self.h_line = QtWidgets.QGroupBox()
+        self.h_line.setAccessibleName('resizeHandle')
+        self.h_line.setFixedHeight(2)
+        self.h_line.setAutoFillBackground(True)
+        self.mainLayout.addWidget(self.h_line)
+        self.setLayout(self.mainLayout)
+
+
+    def mousePressEvent(self, event):
+        self._resizing = True
+        self._pos = event.globalY()
+        self._originalHeight = self._target.height()
+
+    def mouseReleaseEvent(self, event):
+        self._resizing = False
+        self._pos = None
+        self._originalHeight = None
+
+    def mouseMoveEvent(self, event):
+        if self._resizing:
+            delta = int(event.globalY() - self._pos)
+            self._target.setFixedHeight(max(self._originalMinHeight, self._originalHeight+delta))
