@@ -187,7 +187,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.submitButtons = CueSubmitButtons()
         self.setupUi()
         self.setupConnections()
-        self.jobDataChanged()
+        self.jobLayerSelectionChanged(self.jobTreeWidget.currentLayerData)
 
     def showEvent(self, event):
         if self.startupErrors:
@@ -341,6 +341,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
         """Action when the job type is changed."""
         self.updateSettingsWidget(self.jobTypeSelector.text())
         self.jobDataChanged()
+        self.jobLayerSelectionChanged(self.jobTreeWidget.currentLayerData)
 
     def updateJobTypeSelector(self, layerType):
         """Update the job type selector to the given layerType.
