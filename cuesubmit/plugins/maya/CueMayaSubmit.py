@@ -79,6 +79,7 @@ class CueSubmitMainWindow(QtWidgets.QMainWindow):
             jobTypes=MayaJobTypes,
             settingsWidgetType=MayaJobTypes.MAYA,
             filename=getFilename(),
+            project=getProject(),
             cameras=getCameras(),
             parent=self
         )
@@ -92,6 +93,11 @@ class CueSubmitMainWindow(QtWidgets.QMainWindow):
 def getFilename():
     """Return the current Maya scene filename."""
     return cmds.file(q=True, sn=True)
+
+
+def getProject():
+    """Return the current Maya project location."""
+    return cmds.workspace(q=True, rd=True)
 
 
 def getCameras():
