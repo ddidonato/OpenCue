@@ -27,14 +27,20 @@ from cuesubmit import JobTypes
 
 def buildMayaCmd(layerData):
     """From a layer, build a Maya Render command."""
-    camera = layerData.cmd.get('camera')
     mayaFile = layerData.cmd.get('mayaFile')
+    mayaProject = layerData.cmd.get('mayaProject')
     if not mayaFile:
         raise ValueError('No Maya File provided. Cannot submit job.')
     renderCommand = '{renderCmd} -r file -s {frameToken} -e {frameToken}'.format(
         renderCmd=Constants.MAYA_RENDER_CMD, frameToken=Constants.FRAME_TOKEN)
-    if camera:
+    if 'camera' in layerData.cmd:
+        # If launched within maya, select a camera
+        camera = layerData.cmd.get('camera')
+        if not camera:
+            raise ValueError('No camera selected. Cannot submit job.')
         renderCommand += ' -cam {}'.format(camera)
+    if mayaProject:
+        renderCommand += ' -proj \'{}\''.format(mayaProject)
     renderCommand += ' {}'.format(mayaFile)
     return renderCommand
 
