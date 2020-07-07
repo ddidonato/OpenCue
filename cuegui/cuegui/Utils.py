@@ -409,7 +409,10 @@ def getResourceConfig(path=None):
 ################################################################################
 
 def getFrameLogFile(job, frame):
-    return os.path.join(job.data.log_dir, "%s.%s.rqlog" % (job.data.name, frame.data.name))
+    log_dir = job.data.log_dir
+    if platform.system() == "Darwin" and log_dir.startswith('/mnt/'):
+        log_dir = log_dir.replace('/mnt/', '/Volumes/', 1)
+    return os.path.join(log_dir, "%s.%s.rqlog" % (job.data.name, frame.data.name))
 
 
 def getFrameLLU(job, frame):
