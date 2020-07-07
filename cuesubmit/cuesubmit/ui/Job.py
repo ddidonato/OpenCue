@@ -22,6 +22,7 @@ class CueJobWidget(QtWidgets.QWidget):
         self.jobRow = QtGui.QStandardItem('')
         self.jobRow.setEditable(False)
         self.currentLayerData = Layer.LayerData()
+        self.currentLayerData.name += '1'
         self.layers = [self.currentLayerData]
         self.setContentsMargins(0, 0, 0, 8)
         self.resizeHandle = Widgets.CueResizeHandle(target=self.table)
@@ -214,6 +215,7 @@ class CueJobWidget(QtWidgets.QWidget):
     def newLayer(self):
         """Create a new Layer and add it to the job tree."""
         self.currentLayerData = Layer.LayerData()
+        self.currentLayerData.name += str(self.jobRow.rowCount() + 1)
         self.layers.append(self.currentLayerData)
         self.addRow(self.currentLayerData)
         self.selected = self.jobRow.child(self.getCurrentRow() + 1)
