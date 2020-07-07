@@ -15,7 +15,7 @@ class CueJobWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(CueJobWidget, self).__init__(parent=parent)
-
+        self.setObjectName('jobWidget')
         self.table = CueJobTree()
         self.model = CueJobModel()
         self.jobRow = QtGui.QStandardItem('')

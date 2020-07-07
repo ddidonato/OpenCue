@@ -31,6 +31,7 @@ class CueLabelLineEdit(QtWidgets.QWidget):
         self.mainLayout = QtWidgets.QGridLayout()
         self.mainLayout.setVerticalSpacing(0)
         self.label = QtWidgets.QLabel(labelText)
+        self.label.setAccessibleName('cueLabel')
         self.label.setAlignment(QtCore.Qt.AlignLeft)
         self.label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.lineEdit = CueLineEdit(defaultText, completerStrings=completers)
@@ -61,19 +62,18 @@ class CueLabelLineEdit(QtWidgets.QWidget):
 
     def textFocusChange(self, value):
         """Highlight the underline when in focus."""
-        if value:
-            self.horizontalLine.setStyleSheet(Style.UNDERLINE_HIGHLIGHT)
-        else:
-            self.horizontalLine.setStyleSheet(Style.UNDERLINE)
+        pass
 
     def validateText(self):
         """Check validators and set the style of the label."""
         results = [i(self.lineEdit.text()) for i in self.validators]
         if all(results):
-            self.label.setStyleSheet(Style.LABEL_TEXT)
+            self.label.setAccessibleName('cueLabel')
+            self.label.setStyleSheet('')
             return True
         else:
-            self.label.setStyleSheet(Style.INVALID_TEXT)
+            self.label.setAccessibleName('cueLabelInvalid')
+            self.label.setStyleSheet('')
             return False
 
     def text(self):
@@ -101,7 +101,6 @@ class CueLineEdit(QtWidgets.QLineEdit):
             self.completerModel = QtGui.QStringListModel()
         self.completerStrings = completerStrings or []
         self.setupCompleter()
-        self.setStyleSheet(Style.LINE_EDIT)
 
     def focusInEvent(self, e):
         super(CueLineEdit, self).focusInEvent(e)
@@ -116,7 +115,6 @@ class CueLineEdit(QtWidgets.QLineEdit):
         self.completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.completerModel.setStringList(self.completerStrings)
         self.completer.setModel(self.completerModel)
-        self.completer.popup().setStyleSheet(Style.POPUP_LIST_VIEW)
         self.setCompleter(self.completer)
 
     def keyPressEvent(self, event):
@@ -157,7 +155,9 @@ class CueSelectPulldown(QtWidgets.QWidget):
         self.mainLayout = QtWidgets.QGridLayout()
         self.setLayout(self.mainLayout)
         self.label = QtWidgets.QLabel(labelText)
+        self.label.setAccessibleName('cueLabel')
         self.toolButton = QtWidgets.QToolButton(parent=self)
+        self.toolButton.setAccessibleName('pulldownToolButton')
         self.optionsMenu = QtWidgets.QMenu(self)
         self.setOptions(options)
         if self.multiselect:
@@ -297,7 +297,6 @@ class CueToggle(QtWidgets.QSlider):
         self.setSingleStep(1)
         self.setFixedWidth(30)
         self.setupConnections()
-        self.setStyleSheet(Style.TOGGLE_DEFAULT)
 
     def setupConnections(self):
         self.valueChanged.connect(self.change)
@@ -305,10 +304,7 @@ class CueToggle(QtWidgets.QSlider):
 
     def change(self):
         """Action when the toggle is dragged."""
-        if self.value() == 1:
-            self.setStyleSheet(Style.TOGGLE_ENABLED)
-        else:
-            self.setStyleSheet(Style.TOGGLE_DEFAULT)
+        pass
 
     def toggle(self):
         """Action when the toggle is clicked.
@@ -328,8 +324,8 @@ class CueHelpWidget(QtWidgets.QWidget):
         super(CueHelpWidget, self).__init__(parent=parent)
         self.helpVisible = False
         self.mainLayout = QtWidgets.QGridLayout()
-        self.mainLayout.setVerticalSpacing(1)
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setVerticalSpacing(2)
+        self.setAccessibleName('helpWidget')
         self.contentLayout = QtWidgets.QHBoxLayout()
         self.setLayout(self.mainLayout)
 
@@ -337,13 +333,11 @@ class CueHelpWidget(QtWidgets.QWidget):
         self.helpButton.setAccessibleName('helpButton')
         self.helpButton.setToolTip(self.helpText)
         self.helpTextField = QtWidgets.QTextEdit()
-
+        self.helpTextField.setFixedHeight(100)
+        self.helpTextField.setAccessibleName('helpTextField')
         self.mainLayout.addLayout(self.contentLayout, 0, 0, 1, 4)
         self.mainLayout.addWidget(self.helpButton, 0, 4, 1, 1)
         self.mainLayout.addWidget(self.helpTextField, 1, 0, 1, 5)
-        self.mainLayout.addItem(CueSpacerItem(SpacerTypes.VERTICAL), 3, 0, 1, 5)
-        self.mainLayout.setVerticalSpacing(0)
-        self.mainLayout.setRowStretch(3, 1)
 
         self.hideHelpText()
         self.setHelpText()
@@ -357,7 +351,6 @@ class CueHelpWidget(QtWidgets.QWidget):
         self.setToolTip(self.helpText)
         self.helpTextField.setText(self.helpText)
         self.helpTextField.setReadOnly(True)
-        self.helpTextField.setStyleSheet(Style.HELP_TEXT_FIELD)
 
     def toggleHelp(self):
         """Show or hide the help text area."""
@@ -402,6 +395,9 @@ class CueLabelLine(QtWidgets.QWidget):
         self.setLayout(self.mainLayout)
         self.label = QtWidgets.QLabel(labelText)
         self.line = separatorLine()
+        self.setAccessibleName('cueLabelLine')
+        self.label.setAccessibleName('cueLabelLineLabel')
+        self.line.setAccessibleName('cueLabelLineSeparator')
         self.mainLayout.addWidget(self.label, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.line, 0, 1, 2, 2)
         self.mainLayout.setColumnStretch(1, 1)
@@ -412,7 +408,6 @@ def separatorLine():
     line = QtWidgets.QGroupBox()
     line.setFixedHeight(2)
     line.setAutoFillBackground(True)
-    line.setStyleSheet(Style.SEPARATOR_LINE)
     return line
 
 
