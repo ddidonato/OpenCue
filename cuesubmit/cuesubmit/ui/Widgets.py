@@ -29,14 +29,13 @@ class CueLabelLineEdit(QtWidgets.QWidget):
                  completers=None, parent=None):
         super(CueLabelLineEdit, self).__init__(parent)
         self.mainLayout = QtWidgets.QGridLayout()
-        self.mainLayout.setVerticalSpacing(0)
+        self.mainLayout.setVerticalSpacing(2)
         self.label = QtWidgets.QLabel(labelText)
         self.label.setAccessibleName('cueLabel')
         self.label.setAlignment(QtCore.Qt.AlignLeft)
         self.label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.lineEdit = CueLineEdit(defaultText, completerStrings=completers)
         self.lineEdit.setToolTip(tooltip)
-        self.horizontalLine = CueHLine()
         self.validators = validators or []
         self.setupUi()
         self.setupConnections()
@@ -45,9 +44,9 @@ class CueLabelLineEdit(QtWidgets.QWidget):
     def setupUi(self):
         self.setLayout(self.mainLayout)
         self.mainLayout.addWidget(self.label, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.lineEdit, 1, 0, 1, 4)
-        self.mainLayout.addWidget(self.horizontalLine, 2, 0, 1, 4)
-        self.label.setStyleSheet(Style.LABEL_TEXT)
+        self.mainLayout.addWidget(self.lineEdit, 1, 0, 1, 2)
+        self.mainLayout.setColumnStretch(0, 0)
+        self.mainLayout.setColumnStretch(1, 1)
 
     def setupConnections(self):
         self.lineEdit.textChanged.connect(self.validateText)
@@ -153,12 +152,14 @@ class CueSelectPulldown(QtWidgets.QWidget):
         self.multiselect = multiselect
         self.emptyText = emptyText
         self.mainLayout = QtWidgets.QGridLayout()
+        self.mainLayout.setVerticalSpacing(2)
         self.setLayout(self.mainLayout)
         self.label = QtWidgets.QLabel(labelText)
         self.label.setAccessibleName('cueLabel')
         self.toolButton = QtWidgets.QToolButton(parent=self)
         self.toolButton.setAccessibleName('pulldownToolButton')
         self.optionsMenu = QtWidgets.QMenu(self)
+        self.toolButton.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
         self.setOptions(options)
         if self.multiselect:
             self.toolButton.setText(self.emptyText)
@@ -168,7 +169,6 @@ class CueSelectPulldown(QtWidgets.QWidget):
         self.setupConnections()
 
     def setupUi(self):
-        self.mainLayout.setVerticalSpacing(1)
         self.mainLayout.addWidget(self.label, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.toolButton, 1, 0, 1, 1)
         self.toolButton.setMenu(self.optionsMenu)
@@ -363,11 +363,11 @@ class CueHelpWidget(QtWidgets.QWidget):
 
     def hideHelpText(self):
         """Collapse the help text area."""
-        self.helpTextField.setMaximumHeight(0)
+        self.helpTextField.setVisible(False)
 
     def showHelpText(self):
         """Expand the help text area."""
-        self.helpTextField.setMaximumHeight(250)
+        self.helpTextField.setVisible(True)
 
 
 class CueHelpButton(QtWidgets.QPushButton):

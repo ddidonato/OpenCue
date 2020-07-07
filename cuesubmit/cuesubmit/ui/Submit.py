@@ -18,6 +18,7 @@ from cuesubmit import Validators
 from cuesubmit.ui import Frame
 from cuesubmit.ui import Job
 from cuesubmit.ui import Widgets
+from cuesubmit.ui import Style
 
 
 class CueSubmitButtons(QtWidgets.QWidget):
@@ -77,21 +78,12 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.scrollingLayout.setSpacing(0)
         self.scrollableWidget.setLayout(self.scrollingLayout)
         self.mainLayout.addWidget(self.scrollArea)
-        self.jobInfoLayout = QtWidgets.QVBoxLayout()
-        self.layerInfoLayout = QtWidgets.QVBoxLayout()
+        self.jobInfoLayout = QtWidgets.QGridLayout()
         self.submissionDetailsLayout = QtWidgets.QVBoxLayout()
-        self.jobInfoLayout.setContentsMargins(20, 0, 0, 0)
-        self.layerInfoLayout.setContentsMargins(20, 0, 0, 0)
-        self.submissionDetailsLayout.setContentsMargins(20, 0, 0, 0)
+        self.layerInfoLayout = QtWidgets.QVBoxLayout()
         self.settingsLayout = QtWidgets.QHBoxLayout()
+        self.layerSettingsLayout = QtWidgets.QGridLayout()
 
-        self.coresLayout = QtWidgets.QHBoxLayout()
-        self.servicesLayout = QtWidgets.QHBoxLayout()
-        self.showLayout = QtWidgets.QGridLayout()
-        self.facilityLayout = QtWidgets.QGridLayout()
-
-        self.titleLogo = QtWidgets.QLabel()
-        self.titleLogo.setPixmap(QtGui.QPixmap('{}/images/OpenCue.png'.format(Constants.DIR_PATH)))
         self.userNameInput = Widgets.CueLabelLineEdit(
             'User Name:',
             getpass.getuser(),
@@ -158,7 +150,6 @@ class CueSubmitWidget(QtWidgets.QWidget):
             tooltip='Chunk frames by this value. Integers equal or greater than 1.',
             validators=[Validators.matchPositiveIntegers]
         )
-        self.chunkInput.lineEdit.setFixedWidth(120)
         self.dependSelector = Widgets.CueSelectPulldown(
             'Dependency Type:',
             emptyText='',
@@ -178,6 +169,20 @@ class CueSubmitWidget(QtWidgets.QWidget):
 
         self.settingsWidget = self.jobTypes.build(self.primaryWidgetType, *args, **kwargs)
         self.jobTreeWidget = Job.CueJobWidget()
+
+        self.footerWidget = QtWidgets.QWidget()
+        self.footerLayout = QtWidgets.QHBoxLayout()
+        self.titleLogo = QtWidgets.QLabel()
+        logo_url = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'images', 'OpenCue.png'))
+        device_aspect_ratio = QtGui.QGuiApplication.primaryScreen().devicePixelRatio()
+        aspect_multiplier = device_aspect_ratio if device_aspect_ratio else 1
+        logo_pixmap = QtGui.QPixmap(logo_url).scaledToHeight(
+            int(30 * aspect_multiplier), mode=QtCore.Qt.SmoothTransformation
+        )
+        if device_aspect_ratio:
+            logo_pixmap.setDevicePixelRatio(device_aspect_ratio)
+        self.titleLogo.setPixmap(logo_pixmap)
+
         self.submitButtons = CueSubmitButtons()
         self.setupUi()
         self.setupConnections()
@@ -212,30 +217,43 @@ class CueSubmitWidget(QtWidgets.QWidget):
     def setupUi(self):
         self.loadStyleSheetFile()
         self.setLayout(self.mainLayout)
-        self.scrollingLayout.addWidget(self.titleLogo)
-
-        self.scrollingLayout.addWidget(Widgets.CueLabelLine('Job Info'))
-        self.jobInfoLayout.addWidget(self.jobNameInput)
-        self.jobInfoLayout.addWidget(self.userNameInput)
-        self.showLayout.setHorizontalSpacing(20)
-        self.showLayout.setColumnStretch(1, 1)
-        self.showLayout.addWidget(self.showSelector, 0, 0, 1, 1, QtCore.Qt.AlignLeft)
-        self.showLayout.addWidget(self.shotInput, 0, 1, 1, 2)
-        self.jobInfoLayout.addLayout(self.showLayout)
-
-        self.facilityLayout.setHorizontalSpacing(20)
-        self.facilityLayout.setColumnStretch(1, 1)
-        self.facilityLayout.addWidget(self.facilitySelector, 0, 0, 1, 1, QtCore.Qt.AlignLeft)
-        self.jobInfoLayout.addLayout(self.facilityLayout, QtCore.Qt.AlignLeft)
-
+        self.setStyle(Style.NoMarginsStyle(None))
+        self.scrollableWidget.setContentsMargins(8, 8, 8, 8)
+        self.layerInfoLayout.setContentsMargins(8, 0, 0, 0)
+        self.footerLayout.setContentsMargins(3, 3, 6, 3)
+        self.jobInfoLayout.addWidget(self.jobNameInput, 0, 0, 1, 2)
+        self.jobInfoLayout.addWidget(self.showSelector, 1, 0, 1, 1)
+        self.jobInfoLayout.addWidget(self.userNameInput, 1, 1, 1, 1)
+        self.jobInfoLayout.addWidget(self.facilitySelector, 2, 0, 1, 1)
+        self.jobInfoLayout.addWidget(self.shotInput, 2, 1, 1, 1)
+        self.jobInfoLayout.setColumnStretch(0, 1)
+        self.jobInfoLayout.setColumnStretch(1, 2)
+        self.jobInfoLayout.setHorizontalSpacing(12)
+        self.jobInfoLayout.setVerticalSpacing(4)
         self.scrollingLayout.addLayout(self.jobInfoLayout)
+        self.scrollingLayout.addSpacing(10)
 
-        self.scrollingLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.VERTICAL))
+        self.submissionDetailsLayout.addWidget(self.jobTreeWidget)
+        self.scrollingLayout.addLayout(self.submissionDetailsLayout)
+        self.scrollingLayout.addSpacing(4)
+
+        self.layerSettingsLayout.addWidget(self.layerNameInput, 0, 0, 1, 3)
+        self.layerSettingsLayout.addWidget(self.jobTypeSelector, 1, 0)
+        self.layerSettingsLayout.addWidget(self.servicesSelector, 1, 1)
+        self.layerSettingsLayout.addWidget(self.limitsSelector, 1, 2)
+        self.coresInput.lineEdit.setFixedWidth(80)
+        self.layerSettingsLayout.addWidget(self.coresInput, 2, 0)
+        self.chunkInput.lineEdit.setFixedWidth(80)
+        self.layerSettingsLayout.addWidget(self.chunkInput, 2, 1)
+        self.layerSettingsLayout.addWidget(self.dependSelector, 2, 2)
+        self.layerSettingsLayout.setHorizontalSpacing(12)
+        self.layerSettingsLayout.setVerticalSpacing(4)
         self.scrollingLayout.addWidget(Widgets.CueLabelLine('Layer Info'))
-        self.layerInfoLayout.addWidget(self.layerNameInput)
+        self.layerInfoLayout.addLayout(self.layerSettingsLayout)
         self.settingsLayout.addWidget(self.settingsWidget)
+        self.layerInfoLayout.addSpacing(8)
         self.layerInfoLayout.addLayout(self.settingsLayout)
-        self.layerInfoLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.VERTICAL))
+        self.layerInfoLayout.addSpacing(8)
         self.layerInfoLayout.addWidget(self.frameBox)
 
         self.servicesLayout.addWidget(self.jobTypeSelector)
@@ -250,9 +268,17 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.coresLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.HORIZONTAL))
         self.layerInfoLayout.addLayout(self.coresLayout)
         self.scrollingLayout.addLayout(self.layerInfoLayout)
+        self.scrollingLayout.addStretch(100)
 
-        self.scrollingLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.VERTICAL))
-        self.scrollingLayout.addWidget(Widgets.CueLabelLine('Submission Details'))
+        self.footerWidget.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.footerWidget.setLayout(self.footerLayout)
+        self.footerWidget.setObjectName('submitFooter')
+        self.footerLayout.addWidget(self.titleLogo)
+        self.footerLayout.setStretchFactor(self.titleLogo, 0)
+        self.footerLayout.addStretch()
+        self.footerLayout.setAlignment(QtCore.Qt.AlignVCenter)
+        self.footerLayout.addWidget(self.submitButtons)
+        self.mainLayout.addWidget(self.footerWidget)
 
     def loadStyleSheetFile(self):
         style_sheet_file = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cuesubmit.stylesheet'))

@@ -19,6 +19,7 @@ class CueCommandWidget(Widgets.CueHelpWidget):
         super(CueCommandWidget, self).__init__(parent)
         self.commandTextBox = CueCommandTextBox(None)
         self.contentLayout.addWidget(self.commandTextBox)
+        self.setContentsMargins(0, 0, 0, 4)
         self.setupConnections()
 
     def setupConnections(self):
@@ -45,13 +46,13 @@ class CueCommandTextBox(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(CueCommandTextBox, self).__init__(*args, **kwargs)
         self.mainLayout = QtWidgets.QGridLayout()
-        self.mainLayout.setVerticalSpacing(1)
+        self.mainLayout.setVerticalSpacing(3)
         self.label = QtWidgets.QLabel('Command To Run:')
         self.label.setAlignment(QtCore.Qt.AlignLeft)
         self.commandBox = QtWidgets.QTextEdit()
         self.commandBox.setAccessibleName('commandBox')
-        self.horizontalLine = Widgets.CueHLine()
-        self.setFixedHeight(120)
+        self.commandBox.setAlignment(QtCore.Qt.AlignLeft)
+        self.setMinimumHeight(120)
         self.commandBox.setToolTip('Enter the command to be run. Valid replacement tokens are:\n'
                                    ' #IFRAME# -- frame number\n'
                                    ' #LAYER# -- layer name\n'
@@ -62,5 +63,6 @@ class CueCommandTextBox(QtWidgets.QWidget):
     def setupUi(self):
         self.setLayout(self.mainLayout)
         self.mainLayout.addWidget(self.label, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.commandBox, 1, 0, 1, 4)
-        self.mainLayout.addWidget(self.horizontalLine, 2, 0, 1, 4)
+        self.mainLayout.addWidget(self.commandBox, 1, 0, 1, 2)
+        self.mainLayout.setColumnStretch(0, 0)
+        self.mainLayout.setColumnStretch(1, 1)

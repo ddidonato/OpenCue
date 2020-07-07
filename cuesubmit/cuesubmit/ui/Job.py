@@ -6,6 +6,7 @@ from builtins import range
 from PySide2 import QtCore, QtGui, QtWidgets
 
 from cuesubmit import Layer
+from cuesubmit.ui import Widgets
 
 
 class CueJobWidget(QtWidgets.QWidget):
@@ -22,6 +23,9 @@ class CueJobWidget(QtWidgets.QWidget):
         self.jobRow.setEditable(False)
         self.currentLayerData = Layer.LayerData()
         self.layers = [self.currentLayerData]
+        self.setContentsMargins(0, 0, 0, 8)
+        self.resizeHandle = Widgets.CueResizeHandle(target=self.table)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
         self.addLayerButton = QtWidgets.QToolButton()
         self.deleteLayerButton = QtWidgets.QToolButton()
@@ -39,15 +43,23 @@ class CueJobWidget(QtWidgets.QWidget):
     def setupUi(self):
         self.setLayout(self.mainLayout)
         self.table.setModel(self.model)
+        self.table.header().setDefaultSectionSize(106)
+        self.table.header().setStretchLastSection(True)
+        self.table.header().resizeSections()
+        self.table.header().setSectionResizeMode(self.table.header().count()-1, QtWidgets.QHeaderView.Interactive)
         header = self.table.header()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive)
         self.model.appendRow(self.jobRow)
         self.mainLayout.addWidget(self.table)
+        self.mainLayout.addWidget(self.resizeHandle)
+        self.buttonLayout.addStretch()
         self.buttonLayout.addWidget(self.downButton)
         self.buttonLayout.addWidget(self.deleteLayerButton)
         self.buttonLayout.addWidget(self.addLayerButton)
         self.buttonLayout.addWidget(self.upButton)
+        self.buttonLayout.addStretch()
         self.mainLayout.addLayout(self.buttonLayout)
+        self.mainLayout.addStretch()
         self.table.expandAll()
         self.initLayers()
 
@@ -286,7 +298,10 @@ class CueJobTree(QtWidgets.QTreeView):
         super(CueJobTree, self).__init__(parent=parent)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.setUniformRowHeights(True)
-        self.setMinimumHeight(100)
+        self.setRootIsDecorated(False)
+        self.setAlternatingRowColors(True)
+        self.setMinimumHeight(120)
+        self.setFixedHeight(120)
 
 
 class CueJobModel(QtGui.QStandardItemModel):
