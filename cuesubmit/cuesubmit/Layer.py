@@ -20,6 +20,9 @@ from __future__ import absolute_import
 
 from builtins import str
 from builtins import object
+
+from cuesubmit import Constants, JobTypes
+
 class DependType(object):
     """Types of Dependencies available in the UI."""
 
@@ -32,12 +35,12 @@ class LayerData(object):
     """Data object for storing settings about the Layer."""
 
     def __init__(self):
-        self.name = ''
-        self.layerType = ''
+        self.name = Constants.DEFAULT_LAYER_PREFIX
+        self.layerType = Constants.DEFAULT_LAYER_TYPE
         self.cmd = {}
         self.layerRange = ''
-        self.chunk = '1'
-        self.cores = '1'
+        self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[self.layerType]
+        self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[self.layerType]
         self.env = {}
         self.services = []
         self.limits = []
@@ -77,8 +80,6 @@ class LayerData(object):
         """Update this Layer with the provided settings."""
         if name is not None:
             self.name = name
-        if layerType is not None:
-            self.layerType = layerType
         if cmd is not None:
             self.cmd = cmd
         if layerRange is not None:
@@ -97,3 +98,8 @@ class LayerData(object):
             self.dependType = dependType
         if dependsOn is not None:
             self.dependsOn = dependsOn
+        if layerType is not None:
+            if layerType != self.layerType:
+                self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[layerType]
+                self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[layerType]
+            self.layerType = layerType
