@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from builtins import str
 from builtins import range
 import getpass
+import os
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
