@@ -256,17 +256,6 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.layerInfoLayout.addSpacing(8)
         self.layerInfoLayout.addWidget(self.frameBox)
 
-        self.servicesLayout.addWidget(self.jobTypeSelector)
-        self.servicesLayout.addWidget(self.servicesSelector)
-        self.servicesLayout.addWidget(self.limitsSelector)
-        self.servicesLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.HORIZONTAL))
-        self.layerInfoLayout.addLayout(self.servicesLayout)
-
-        self.coresLayout.addWidget(self.coresInput)
-        self.coresLayout.addWidget(self.chunkInput)
-        self.coresLayout.addWidget(self.dependSelector)
-        self.coresLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.HORIZONTAL))
-        self.layerInfoLayout.addLayout(self.coresLayout)
         self.scrollingLayout.addLayout(self.layerInfoLayout)
         self.scrollingLayout.addStretch(100)
 
