@@ -1,0 +1,214 @@
+* {
+    font-size: 10px;
+}
+QWidget {
+    color: #c2c2c2;
+    background-color: rgb(60,60,60);
+    border: none;
+    outline: none;
+}
+QDialog QLabel{
+    font-size: 12px;
+}
+QHeaderView::section:horizontal {
+    background-color: rgb(60, 70, 80);
+    height: 12px;
+    padding: 5px 2px 2px 2px;
+    margin: 0;
+	border: none;
+	border-right: 1px solid rgb(40,40,40);
+}
+QScrollArea {
+    border-bottom: 1px solid #323232;
+}
+QWidget#submitFooter {
+    background: rgb(100,100,100);
+}
+QWidget#submitFooter > QLabel {
+    background: rgb(100,100,100);
+}
+QWidget#submitFooter QPushButton#cancelButton {
+    background-color: rgb(60,60,60);
+    padding: 4px 8px 4px 8px;
+    width: 60px;
+}
+QWidget#submitFooter QPushButton#cancelButton:pressed {
+    background-color: rgb(70,70,70);
+}
+QWidget#submitFooter QPushButton#submitButton, QMessageBox QPushButton {
+    background-color: rgb(30,91,201);
+    padding: 4px 8px 4px 8px;
+    color: #FFFFFF;
+    width: 60px;
+}
+QWidget#submitFooter QPushButton#submitButton:pressed, QMessageBox QPushButton:pressed {
+    background-color: rgb(50,111,221);
+}
+QWidget QLabel[accessibleName='cueLabelInvalid'] {
+    color: rgb(237,106,94);
+}
+QMessageBox QLabel {
+    font-size: 10px;
+    min-width: 330px;
+    max-width: 330px;
+    width: 330px;
+}
+QLineEdit, QToolButton[accessibleName='pulldownToolButton'] {
+    background-color: rgb(40,40,40);
+    border-radius: 0;
+    min-height: 20px;
+    max-height: 20px;
+    height: 20px;
+    padding: 1px 4px 1px 4px;
+    font-size: 12px;
+}
+QToolButton[accessibleName='pulldownToolButton']  {
+    padding-right: 20px;
+}
+QToolButton[accessibleName='pulldownToolButton']:open {
+    color: rgb(150,150,150);
+}
+QToolButton[accessibleName='pulldownToolButton']::menu-indicator {
+    height: 8px;
+    width: 8px;
+    padding: 0;
+    margin-right: 12px;
+    subcontrol-position: right center;
+}
+QWidget#jobWidget QToolButton {
+    background-color: rgb(100,100,100);
+    padding:4px;
+    width:13px;
+    height:9px;
+}
+QWidget#jobWidget QToolButton {
+}
+QWidget#jobWidget QToolButton:pressed {
+    background-color: rgb(115,115,115);
+}
+QWidget#jobWidget QToolButton::menu-indicator {
+    margin-left: 4px;
+}
+QPushButton[text="?"] {
+    background-color: rgb(100,100,100);
+    padding: 0;
+    margin: 0;
+    height: 18px;
+    max-height: 18px;
+}
+QAbstractScrollArea::corner {
+    background: rgb(60,60,60);
+}
+QMenu {
+    font-size: 12px;
+    background-color: rgb(40,40,40);
+}
+QMenu:selected,QMenu:hover,QMenu::item:selected,QMenu::item:hover {
+    background: rgb(80,80,80);
+}
+QPushButton {
+    outline: none;
+    color: rgb(255,255,255);
+    background-color: rgb(100,100,100);
+    border: 0;
+    padding: 2px;
+    font-size: 12px;
+}
+QPushButton:pressed {
+    background-color: rgb(115,115,115);
+}
+QTreeView::branch {
+    border-image: url(none.png);
+}
+QTreeView {
+    border: 1px solid rgb(40,40,40);
+    background-color: rgb(40,40,40);
+    alternate-background-color: rgb(46,46,46);
+    selection-background-color: rgb(30,91,201);
+    paint-alternating-row-colors-for-empty-area: true;
+    selection-color: #FFFFFF;
+}
+QTreeView::item {
+    margin: 2px;
+    min-height: 16px;
+}
+QTreeView#ingestTree::item {
+    margin: 4px;
+}
+QHeaderView {
+    background-color: rgb(100,100,100);
+    margin: 0;
+    padding: 0;
+    color: rgb(230,230,230);
+}
+QHeaderView::section:horizontal {
+    background-color: rgb(100,100,100);
+    height: 12px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 0;
+    padding-left: 5px;
+	border: none;
+	border-right: 1px solid rgb(40,40,40);
+}
+QWidget[accessibleName='cueLabelLineLabel'] {
+    color: rgb(140,140,140);
+}
+QGroupBox[accessibleName='cueLabelLineSeparator'] {
+    border-bottom: 1px solid rgb(140,140,140);
+}
+QTextEdit {
+    background-color: rgb(40,40,40);
+    color: rgb(150, 150, 150);
+    font-size: 10pt;
+    margin: 0;
+}
+QGroupBox[accessibleName='resizeHandle'] {
+    background: rgb(40,40,40);
+}
+QScrollBar {
+    margin: 0;
+    background-color: rgb(45,45,45);
+}
+QScrollBar:horizontal {
+     height: 12px;
+     margin: 0;
+     border-top: 1px solid #323232;
+}
+QScrollBar::handle {
+    background-color: rgb(80,80,80);
+}
+QScrollBar::add-line:horizontal {
+    border: none;
+    background: none;
+    height: 0;
+}
+QScrollBar::sub-line:horizontal {
+    border: none;
+    background: none;
+    height: 0;
+}
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    height: 0;
+    background: none;
+}
+QScrollBar:vertical {
+    width: 12px;
+    margin: 0;
+    border-left: 1px solid #323232;
+}
+QScrollBar::add-line:vertical {
+    border: none;
+    background: none;
+    height: 0;
+}
+QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+    height: 0;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    height: 0;
+    background: none;
+}
+

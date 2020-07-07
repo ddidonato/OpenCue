@@ -31,8 +31,9 @@ class CueSubmitButtons(QtWidgets.QWidget):
         self.buttonLayout = QtWidgets.QHBoxLayout()
         self.setLayout(self.buttonLayout)
         self.submitButton = QtWidgets.QPushButton('Submit', parent=self)
+        self.submitButton.setObjectName('submitButton')
         self.cancelButton = QtWidgets.QPushButton('Cancel', parent=self)
-        self.buttonLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.HORIZONTAL))
+        self.cancelButton.setObjectName('cancelButton')
         self.buttonLayout.addWidget(self.cancelButton)
         self.buttonLayout.addWidget(self.submitButton)
         self.state = None
@@ -209,6 +210,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.dependSelector.optionsMenu.triggered.connect(self.dependencyChanged)
 
     def setupUi(self):
+        self.loadStyleSheetFile()
         self.setLayout(self.mainLayout)
         self.scrollingLayout.addWidget(self.titleLogo)
 
@@ -252,9 +254,10 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.scrollingLayout.addSpacerItem(Widgets.CueSpacerItem(Widgets.SpacerTypes.VERTICAL))
         self.scrollingLayout.addWidget(Widgets.CueLabelLine('Submission Details'))
 
-        self.submissionDetailsLayout.addWidget(self.jobTreeWidget)
-        self.submissionDetailsLayout.addWidget(self.submitButtons)
-        self.scrollingLayout.addLayout(self.submissionDetailsLayout)
+    def loadStyleSheetFile(self):
+        style_sheet_file = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cuesubmit.stylesheet'))
+        with open(style_sheet_file, "r") as f:
+            self.setStyleSheet(f.read())
 
     def dependencyChanged(self):
         """Action called when the dependency type is changed."""
