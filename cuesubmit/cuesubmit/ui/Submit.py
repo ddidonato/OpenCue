@@ -41,8 +41,8 @@ class CueSubmitButtons(QtWidgets.QWidget):
         self.setupConnections()
 
     def setupConnections(self):
-        self.submitButton.pressed.connect(self.submitPressed)
-        self.cancelButton.pressed.connect(self.cancelPressed)
+        self.submitButton.clicked.connect(self.submitPressed)
+        self.cancelButton.clicked.connect(self.cancelPressed)
 
     def submitPressed(self):
         self.state = "submitted"
