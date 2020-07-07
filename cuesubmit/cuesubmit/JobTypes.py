@@ -19,6 +19,7 @@ from __future__ import absolute_import
 
 from builtins import object
 from cuesubmit.ui import SettingsWidgets
+from cuesubmit import Constants
 
 
 class JobTypes(object):
@@ -37,6 +38,20 @@ class JobTypes(object):
         MAYA: SettingsWidgets.BaseMayaSettings,
         NUKE: SettingsWidgets.BaseNukeSettings,
         BLENDER: SettingsWidgets.BaseBlenderSettings,
+    }
+
+    DEFAULT_CORES_MAP = {
+        SHELL: Constants.DEFAULT_MIN_CORES,
+        MAYA: Constants.DEFAULT_MIN_CORES_MAYA,
+        NUKE: Constants.DEFAULT_MIN_CORES_NUKE,
+        BLENDER: Constants.DEFAULT_MIN_CORES_BLENDER,
+    }
+
+    DEFAULT_CHUNK_MAP = {
+        SHELL: Constants.DEFAULT_CHUNK,
+        MAYA: Constants.DEFAULT_CHUNK_MAYA,
+        NUKE: Constants.DEFAULT_CHUNK_NUKE,
+        BLENDER: Constants.DEFAULT_CHUNK_BLENDER,
     }
 
     def __init__(self):
