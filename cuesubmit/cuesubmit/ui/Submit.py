@@ -368,18 +368,19 @@ class CueSubmitWidget(QtWidgets.QWidget):
         return False
 
     def validate(self, jobData):
-        errMessage = 'ERROR: Job not submitted!\n'
-        if not self.jobNameInput.validateText():
-            return self.errorInJobData(errMessage + 'Invalid job name.')
+        errMessage = ''
+        if not self.jobNameInput.validateText() or not jobData.get('name'):
+            errMessage += '\nInvalid job name.'
         if not self.userNameInput.validateText():
-            return self.errorInJobData(errMessage + 'Invalid user name.')
+            errMessage += '\nInvalid user name.'
         if not self.shotInput.validateText():
-            return self.errorInJobData(errMessage + 'Invalid shot name.')
+            errMessage += '\nInvalid shot name.'
         if not self.layerNameInput.validateText():
-            return self.errorInJobData(errMessage + 'Invalid layer name.')
+            errMessage += '\nInvalid layer name.'
 
-        if not jobData.get('name'):
-            return self.errorInJobData(errMessage + 'Cannot submit without a job name.')
+        if errMessage:
+            errMessage = 'ERROR: Job not submitted:\n' + errMessage
+            return self.errorInJobData(errMessage)
 
         layers = jobData.get('layers')
         if not layers:
