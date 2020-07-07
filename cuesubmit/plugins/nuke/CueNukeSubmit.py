@@ -60,8 +60,8 @@ class CueSubmitNukeWindow(QtWidgets.QMainWindow):
         self.setStyleSheet(Style.MAIN_WINDOW)
         self.setCentralWidget(self.submitWidget)
         self.setWindowTitle(name)
-        self.setMinimumWidth(650)
-        self.resize(self.minimumWidth(), 1000)
+        self.setMinimumWidth(450)
+        self.resize(self.minimumWidth(), 660)
 
 
 class CueSubmitNukeApp(QtWidgets.QApplication):
