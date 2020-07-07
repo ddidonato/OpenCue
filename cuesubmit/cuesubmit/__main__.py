@@ -53,8 +53,9 @@ class CueSubmitMainWindow(QtWidgets.QMainWindow):
         )
         self.setCentralWidget(self.submitWidget)
         self.setWindowTitle(name)
-        self.setMinimumWidth(650)
-        self.resize(self.minimumWidth(), 1050)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setMinimumWidth(450)
+        self.resize(self.minimumWidth(), 680)
 
 
 def main():
