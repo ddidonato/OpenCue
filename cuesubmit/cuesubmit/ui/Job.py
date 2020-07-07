@@ -118,9 +118,10 @@ class CueJobWidget(QtWidgets.QWidget):
         @rtype: Layer.LayerData
         @return: the layer date that was removed
         """
-        row = self.getCurrentRow()
-        self.jobRow.removeRow(row)
-        return self.layers.pop(row)
+        if self.jobRow.rowCount() > 1:
+            row = self.getCurrentRow()
+            self.jobRow.removeRow(row)
+            return self.layers.pop(row)
 
     def moveUp(self):
         """Move the currently selected row up one index."""
