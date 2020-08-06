@@ -121,8 +121,8 @@ QTreeView::item {
     margin: 2px;
     min-height: 16px;
 }
-QTreeView#ingestTree::item {
-    margin: 4px;
+QTreeView::item:disabled {
+    color:rgb(100,100,100);
 }
 QHeaderView {
     background-color: rgb(100,100,100);
