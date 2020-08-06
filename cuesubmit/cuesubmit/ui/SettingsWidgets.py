@@ -35,8 +35,16 @@ class InMayaSettings(BaseSettingsWidget):
         super(InMayaSettings, self).__init__(parent=parent)
         self._filename = filename
         self._project = project
-        self.mayaFileInput = Widgets.CueFileBrowserLineEdit('Maya File:', defaultText=self._filename, fileTypes=['ma', 'mb'])
-        self.mayaProjectInput = Widgets.CueFileBrowserLineEdit('Maya Project:', defaultText=self._project, selectFolder=True)
+        self.mayaFileInput = Widgets.CueLabelFileSelect(
+            'Maya File:', fileTypes=['ma', 'mb']
+        )
+        if self._filename:
+            self.mayaFileInput.fileSelect.setSelected(self._filename)
+        self.mayaProjectInput = Widgets.CueLabelFileSelect(
+            'Maya Project:', selectFolders=True
+        )
+        if self._project:
+            self.mayaProjectInput.fileSelect.setSelected(self._project)
         self.cameraSelector = Widgets.CueSelectPulldown('Render Cameras', options=cameras)
         self.selectorLayout = QtWidgets.QHBoxLayout()
         super(InMayaSettings, self).__init__(parent=parent)
@@ -47,14 +55,14 @@ class InMayaSettings(BaseSettingsWidget):
         self.mainLayout.addLayout(self.selectorLayout)
 
     def setCommandData(self, commandData):
-        self.mayaFileInput.setText(commandData.get('mayaFile', self._filename))
-        self.mayaProjectInput.setText(commandData.get('mayaProject', self._project))
+        self.mayaFileInput.fileSelect.setSelected(commandData.get('mayaFile', self._filename))
+        self.mayaProjectInput.fileSelect.setSelected(commandData.get('mayaProject', self._project))
         self.cameraSelector.setChecked(commandData.get('camera', '').split(','))
 
     def getCommandData(self):
         return {
-            'mayaFile': self.mayaFileInput.text(),
-            'mayaProject': self.mayaProjectInput.text(),
+            'mayaFile': self.mayaFileInput.fileSelect.selected(),
+            'mayaProject': self.mayaProjectInput.fileSelect.selected(),
             'camera': self.cameraSelector.text(),
         }
 
@@ -64,8 +72,8 @@ class BaseMayaSettings(BaseSettingsWidget):
 
     def __init__(self, parent=None, *args, **kwargs):
         super(BaseMayaSettings, self).__init__(parent=parent)
-        self.mayaFileInput = Widgets.CueFileBrowserLineEdit('Maya File:', fileTypes=['ma', 'mb'])
-        self.mayaProjectInput = Widgets.CueFileBrowserLineEdit('Maya Project:', selectFolder=True)
+        self.mayaFileInput = Widgets.CueLabelFileSelect('Maya File:', fileTypes=['ma', 'mb'], multiSelect=False)
+        self.mayaProjectInput = Widgets.CueLabelFileSelect('Maya Project:', selectFolders=True, multiSelect=False)
         self.setupUi()
         self.setupConnections()
 
@@ -74,17 +82,17 @@ class BaseMayaSettings(BaseSettingsWidget):
         self.mainLayout.addWidget(self.mayaProjectInput)
 
     def setupConnections(self):
-        self.mayaFileInput.lineEdit.textChanged.connect(self.dataChanged.emit)
-        self.mayaProjectInput.lineEdit.textChanged.connect(self.dataChanged.emit)
+        self.mayaFileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.mayaProjectInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
 
     def setCommandData(self, commandData):
-        self.mayaFileInput.setText(commandData.get('mayaFile', ''))
-        self.mayaProjectInput.setText(commandData.get('mayaProject', ''))
+        self.mayaFileInput.fileSelect.setSelected(commandData.get('mayaFile', None))
+        self.mayaProjectInput.fileSelect.setSelected(commandData.get('mayaProject', None))
 
     def getCommandData(self):
         return {
-            'mayaFile': self.mayaFileInput.text(),
-            'mayaProject': self.mayaProjectInput.text(),
+            'mayaFile': self.mayaFileInput.selected(),
+            'mayaProject': self.mayaProjectInput.selected(),
         }
 
 
@@ -93,7 +101,11 @@ class InNukeSettings(BaseSettingsWidget):
 
     def __init__(self, writeNodes=None, filename=None, parent=None, *args, **kwargs):
         super(InNukeSettings, self).__init__(parent=parent)
-        self.fileInput = Widgets.CueFileBrowserLineEdit('Nuke File:', defaultText=filename, fileTypes=['nk'])
+        self.fileInput = Widgets.CueLabelFileSelect(
+            'Nuke File:', fileTypes=['nk'], multiSelect=False, selectFolders=False
+        )
+        if filename:
+            self.fileInput.fileSelect.setSelected(filename)
         self.writeNodeSelector = Widgets.CueSelectPulldown('Write Nodes:', emptyText='[All]',
                                                            options=writeNodes)
         self.selectorLayout = QtWidgets.QHBoxLayout()
@@ -105,12 +117,12 @@ class InNukeSettings(BaseSettingsWidget):
         self.mainLayout.addLayout(self.selectorLayout)
 
     def setCommandData(self, commandData):
-        self.fileInput.setText(commandData.get('nukeFile', ''))
+        self.fileInput.fileSelect.setSelected(commandData.get('nukeFile', None))
         self.writeNodeSelector.setChecked(commandData.get('writeNodes', '').split(','))
 
     def getCommandData(self):
         return {
-            'nukeFile': self.fileInput.text(),
+            'nukeFile': self.fileInput.fileSelect.selected(),
             'writeNodes': self.writeNodeSelector.text()
         }
 
@@ -120,7 +132,9 @@ class BaseNukeSettings(BaseSettingsWidget):
 
     def __init__(self, parent=None, *args, **kwargs):
         super(BaseNukeSettings, self).__init__(parent=parent)
-        self.fileInput = Widgets.CueFileBrowserLineEdit('Nuke File:', fileTypes=['nk'])
+        self.fileInput = Widgets.CueLabelFileSelect(
+            'Nuke File:', fileTypes=['nk'], multiSelect=False, selectFolders=False
+        )
         self.setupUi()
         self.setupConnections()
 
@@ -128,14 +142,14 @@ class BaseNukeSettings(BaseSettingsWidget):
         self.mainLayout.addWidget(self.fileInput)
 
     def setupConnections(self):
-        self.fileInput.lineEdit.textChanged.connect(self.dataChanged.emit)
+        self.fileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
 
     def setCommandData(self, commandData):
-        self.fileInput.setText(commandData.get('nukeFile', ''))
+        self.fileInput.fileSelect.setSelected(commandData.get('nukeFile', None))
 
     def getCommandData(self):
         return {
-            'nukeFile': self.fileInput.text(),
+            'nukeFile': self.fileInput.fileSelect.selected(),
         }
 
 
@@ -168,16 +182,15 @@ class BaseBlenderSettings(BaseSettingsWidget):
 
     def __init__(self, parent=None, *args, **kwargs):
         super(BaseBlenderSettings, self).__init__(parent=parent)
-        self.fileInput = Widgets.CueFileBrowserLineEdit('Blender File:', fileTypes=['blend'])
-        self.outputPath = Widgets.CueFileBrowserLineEdit(
-            'Output Path (Optional):',
-            tooltip='Optionally set the rendered output format. '
-                    'See the "-o" flag of {} for more info.'.format(
-                            Constants.BLENDER_OUTPUT_OPTIONS_URL),
-            selectFolder=True
+        self.fileInput = Widgets.CueLabelFileSelect(
+            'Blender File:', fileTypes=['blend'], selectFolders=False, multiSelect=False
+        )
+        self.outputPath = Widgets.CueLabelFileSelect(
+            'Output Path (Optional):', selectFolders=True, multiSelect=False, clearOnCancel=True
         )
         self.outputSelector = Widgets.CueSelectPulldown(
-            'Output Format', options=Constants.BLENDER_FORMATS, multiselect=False)
+            'Output Format (Optional)', options=Constants.BLENDER_FORMATS, multiselect=False
+        )
         self.outputLayout = QtWidgets.QHBoxLayout()
         self.setupUi()
         self.setupConnections()
@@ -192,17 +205,17 @@ class BaseBlenderSettings(BaseSettingsWidget):
         self.mainLayout.addWidget(self.outputPath)
 
     def setupConnections(self):
-        self.fileInput.lineEdit.textChanged.connect(self.dataChanged.emit)
-        self.outputPath.lineEdit.textChanged.connect(self.dataChanged.emit)
+        self.fileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.outputPath.fileSelect.selectionChanged.connect(self.dataChanged.emit)
 
     def setCommandData(self, commandData):
-        self.fileInput.setText(commandData.get('nukeFile', ''))
-        self.outputPath.setText(commandData.get('outputPath', ''))
+        self.fileInput.fileSelect.setSelected(commandData.get('nukeFile', None))
+        self.outputPath.fileSelect.setSelected(commandData.get('outputPath', None))
         self.outputSelector.setChecked(commandData.get('outputFormat', ''))
 
     def getCommandData(self):
         return {
-            'blenderFile': self.fileInput.text(),
-            'outputPath': self.outputPath.text(),
+            'blenderFile': self.fileInput.fileSelect.selected(),
+            'outputPath': self.outputPath.fileSelect.selected(),
             'outputFormat': self.outputSelector.text()
         }

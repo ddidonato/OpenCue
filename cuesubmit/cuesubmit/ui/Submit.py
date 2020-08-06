@@ -59,6 +59,8 @@ class CueSubmitWidget(QtWidgets.QWidget):
 
     def __init__(self, settingsWidgetType, jobTypes=JobTypes.JobTypes, parent=None, *args, **kwargs):
         super(CueSubmitWidget, self).__init__(parent)
+        self.setObjectName('submitWidget')
+        self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
         self.startupErrors = list()
         self.skipDataChangedEvent = False
         self.settings = QtCore.QSettings('opencue', 'cuesubmit')

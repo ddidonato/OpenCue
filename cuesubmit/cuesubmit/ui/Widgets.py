@@ -6,8 +6,7 @@ from builtins import object
 from PySide2 import QtCore, QtGui, QtWidgets
 
 from cuesubmit import Constants
-from cuesubmit.ui import Style
-
+from .file_browser import DDFileSelect
 
 class SpacerTypes(object):
     """Utility object for defining types of Spacers."""
@@ -480,39 +479,32 @@ class CueResizeHandle(QtWidgets.QWidget):
             self._target.setFixedHeight(max(self._originalMinHeight, self._originalHeight+delta))
 
 
-class CueFileBrowserLineEdit(CueLabelLineEdit):
-    """Container widget that contains a lineedit and label."""
-
-    def __init__(self, labelText=None, defaultText='', tooltip=None, validators=None,
-                 completers=None, parent=None, selectFolder=False, fileTypes=[]):
-        self.fileBrowseButton = QtWidgets.QPushButton('...')
-        self.fileBrowseButton.setFixedWidth(24)
-        self._selectFolder = selectFolder
-        self._fileTypes = fileTypes
-        self.frameRange = None
-        super(CueFileBrowserLineEdit, self).__init__(labelText=labelText, defaultText=defaultText, tooltip=tooltip,
-                 validators=validators,completers=completers, parent=parent)
+class CueLabelFileSelect(QtWidgets.QWidget):
+    def __init__(self, labelText=None, parent=None, fileTypes=[], multiSelect=False,
+                 selectFolders=False, detectFileSequences=False, clearOnCancel=False):
+        super(CueLabelFileSelect, self).__init__(parent)
+        self.mainLayout = QtWidgets.QGridLayout()
+        self.mainLayout.setVerticalSpacing(2)
+        self.label = QtWidgets.QLabel(labelText)
+        self.label.setAccessibleName('cueLabel')
+        self.label.setAlignment(QtCore.Qt.AlignLeft)
+        self.label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        self.fileSelect = DDFileSelect(
+            selectFolders=selectFolders, fileTypes=fileTypes, multiSelect=multiSelect,
+            detectFileSequences=detectFileSequences, clearOnCancel=clearOnCancel
+        )
+        self.setAutoFillBackground(True)
+        self.setupUi()
 
     def setupUi(self):
-        super(CueFileBrowserLineEdit,self).setupUi()
-        self.lineEdit.setReadOnly(True)
-        self.mainLayout.addWidget(self.fileBrowseButton, 1, 5, 1, 1)
+        self.setLayout(self.mainLayout)
+        self.mainLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.mainLayout.addWidget(self.fileSelect, 1, 0, 1, 2)
+        self.mainLayout.setColumnStretch(0, 0)
+        self.mainLayout.setColumnStretch(1, 1)
 
-    def setupConnections(self):
-        super(CueFileBrowserLineEdit, self).setupConnections()
-        self.fileBrowseButton.clicked.connect(self.handleFileButtonClick)
-
-    def handleFileButtonClick(self):
-        path = None
-        if self._selectFolder:
-            path = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder")
-        else:
-            fileType = 'All Files (*.*)'
-            if len(self._fileTypes) > 0:
-                file_string_list = ["*.{0}".format(file_type) for file_type in self._fileTypes]
-                fileType = "Custom ({})".format(' '.join(file_string_list))
-            path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select file", None, fileType)
-        if path:
-            if path == self.text():
-                self.lineEdit.textChanged.emit(self.text())
-            self.setText(path)
+    def selected(self):
+        pass
+    
+    def setSelected(self, paths):
+        pass

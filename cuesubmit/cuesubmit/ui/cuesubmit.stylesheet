@@ -1,22 +1,12 @@
 * {
     font-size: 10px;
-}
-QWidget {
     color: #c2c2c2;
+}
+QSplitter, QDialog, QWidget {
     background-color: rgb(60,60,60);
-    border: none;
-    outline: none;
 }
 QDialog QLabel{
     font-size: 12px;
-}
-QHeaderView::section:horizontal {
-    background-color: rgb(60, 70, 80);
-    height: 12px;
-    padding: 5px 2px 2px 2px;
-    margin: 0;
-	border: none;
-	border-right: 1px solid rgb(40,40,40);
 }
 QScrollArea {
     border-bottom: 1px solid #323232;
@@ -77,11 +67,10 @@ QToolButton[accessibleName='pulldownToolButton']::menu-indicator {
 }
 QWidget#jobWidget QToolButton {
     background-color: rgb(100,100,100);
+    border: 0;
     padding:4px;
     width:13px;
     height:9px;
-}
-QWidget#jobWidget QToolButton {
 }
 QWidget#jobWidget QToolButton:pressed {
     background-color: rgb(115,115,115);
@@ -142,12 +131,10 @@ QHeaderView {
     color: rgb(230,230,230);
 }
 QHeaderView::section:horizontal {
+    height:16px;
     background-color: rgb(100,100,100);
-    height: 12px;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    padding: 0;
-    padding-left: 5px;
+    margin: 0;
+    padding: 0 0 0 5px;
 	border: none;
 	border-right: 1px solid rgb(40,40,40);
 }
@@ -211,4 +198,64 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     height: 0;
     background: none;
 }
-
+QCheckBox::indicator {
+    background-color: rgb(40,40,40);
+    border:none;
+    width: 10px;
+    height: 10px;
+    margin-right:2px;
+    padding:3px;
+}
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled {
+    border: 1px solid #444;
+}
+QLineEdit {
+    background-color:rgb(40,40,40);
+    padding:2px;
+    border:none;
+    outline:none;
+}
+QFileDialog QSplitter::handle, QFileDialog QSizeGrip {
+    background-color:rgb(60,60,60);
+}
+QFileDialog QAbstractItemView {
+    background-color:rgb(40,40,40);
+}
+QFileDialog QToolButton {
+    background-color: rgb(100,100,100);
+    border:0;
+    padding-left: 1px;
+    padding-top: 1px;
+}
+QFileDialog QPushButton {
+    background-color: rgb(100,100,100);
+    width: 80px;
+    margin:0px;
+}
+QMenu {
+    font-size: 12px;
+    color: #ffffff;
+    background-color:rgb(40,40,40);
+}
+QMenu:selected,QMenu:hover, QMenu::item:selected, QMenu::item:hover {
+    background:rgb(80,80,80);
+}
+QComboBox {
+    background-color:rgb(40,40,40);
+    padding: 2px 4px;
+    border:none;
+}
+QComboBox:disabled {
+    selection-background-color: none;
+    background-color: #2f2f2f;
+    color: #aaa;
+    border: 1px solid rgb(40,40,40);
+}
+QComboBox QAbstractItemView {
+    background-color: rgb(60,60,60);
+    border: none;
+    outline: none;
+}
+QComboBox::drop-down {
+    border: none;
+}
