@@ -58,6 +58,14 @@ class JobTypes(object):
         SHELL: Constants.DEFAULT_CHUNK,
     }
 
+    DEFAULT_SERVICE_MAP = {
+        ARNOLD: Constants.DEFAULT_SERVICE_ARNOLD,
+        BLENDER: Constants.DEFAULT_SERVICE_BLENDER,
+        MAYA: Constants.DEFAULT_SERVICE_MAYA,
+        NUKE: Constants.DEFAULT_SERVICE_NUKE,
+        SHELL: Constants.DEFAULT_SERVICE_SHELL,
+    }
+
     def __init__(self):
         pass
 
