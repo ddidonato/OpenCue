@@ -39,13 +39,21 @@ class LayerData(object):
         self.layerType = Constants.DEFAULT_LAYER_TYPE
         self.cmd = {}
         self.layerRange = ''
-        self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[self.layerType]
-        self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[self.layerType]
+        self.chunk = 1
+        self.cores = 1
         self.env = {}
         self.services = []
         self.limits = []
         self.dependType = DependType.Null
         self.dependsOn = None
+        self.populateDefaultValues()
+
+    def populateDefaultValues(self):
+        self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[self.layerType]
+        self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[self.layerType]
+        self.services = []
+        if JobTypes.JobTypes.DEFAULT_SERVICE_MAP[self.layerType]:
+            self.services.append(JobTypes.JobTypes.DEFAULT_SERVICE_MAP[self.layerType])
 
     def __str__(self):
         return str(self.toDict())
@@ -99,7 +107,7 @@ class LayerData(object):
         if dependsOn is not None:
             self.dependsOn = dependsOn
         if layerType is not None:
-            if layerType != self.layerType:
-                self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[layerType]
-                self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[layerType]
+            layer_type_old = self.layerType
             self.layerType = layerType
+            if layer_type_old != self.layerType:
+                self.populateDefaultValues()
