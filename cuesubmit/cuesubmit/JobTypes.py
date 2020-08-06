@@ -28,30 +28,34 @@ class JobTypes(object):
     to enable customized settings widgets.
     """
 
-    SHELL = 'Shell'
+    ARNOLD = 'Arnold'
+    BLENDER = 'Blender'
     MAYA = 'Maya'
     NUKE = 'Nuke'
-    BLENDER = 'Blender'
+    SHELL = 'Shell'
 
     SETTINGS_MAP = {
-        SHELL: SettingsWidgets.ShellSettings,
+        ARNOLD: SettingsWidgets.BaseArnoldSettings,
+        BLENDER: SettingsWidgets.BaseBlenderSettings,
         MAYA: SettingsWidgets.BaseMayaSettings,
         NUKE: SettingsWidgets.BaseNukeSettings,
-        BLENDER: SettingsWidgets.BaseBlenderSettings,
+        SHELL: SettingsWidgets.ShellSettings,
     }
 
     DEFAULT_CORES_MAP = {
-        SHELL: Constants.DEFAULT_MIN_CORES,
+        ARNOLD: Constants.DEFAULT_MIN_CORES_ARNOLD,
+        BLENDER: Constants.DEFAULT_MIN_CORES_BLENDER,
         MAYA: Constants.DEFAULT_MIN_CORES_MAYA,
         NUKE: Constants.DEFAULT_MIN_CORES_NUKE,
-        BLENDER: Constants.DEFAULT_MIN_CORES_BLENDER,
+        SHELL: Constants.DEFAULT_MIN_CORES,
     }
 
     DEFAULT_CHUNK_MAP = {
-        SHELL: Constants.DEFAULT_CHUNK,
+        ARNOLD: Constants.DEFAULT_CHUNK_ARNOLD,
+        BLENDER: Constants.DEFAULT_CHUNK_BLENDER,
         MAYA: Constants.DEFAULT_CHUNK_MAYA,
         NUKE: Constants.DEFAULT_CHUNK_NUKE,
-        BLENDER: Constants.DEFAULT_CHUNK_BLENDER,
+        SHELL: Constants.DEFAULT_CHUNK,
     }
 
     def __init__(self):
@@ -65,4 +69,4 @@ class JobTypes(object):
     @classmethod
     def types(cls):
         """return a list of types available."""
-        return [cls.SHELL, cls.MAYA, cls.NUKE, cls.BLENDER]
+        return [cls.SHELL, cls.MAYA, cls.NUKE, cls.BLENDER, cls.ARNOLD]

@@ -219,3 +219,88 @@ class BaseBlenderSettings(BaseSettingsWidget):
             'outputPath': self.outputPath.fileSelect.selected(),
             'outputFormat': self.outputSelector.text()
         }
+
+
+class BaseArnoldSettings(BaseSettingsWidget):
+    def __init__(self, parent=None,  *args, **kwargs):
+        super(BaseArnoldSettings, self).__init__(parent=parent)
+        self.arnoldFileInput = Widgets.CueLabelFileSelect(
+            'Arnold Files:', fileTypes=['ass'], detectFileSequences=True
+        )
+        self.renderFolderInput = Widgets.CueLabelFileSelect(
+            'Render Folder (Optional):', selectFolders=True, clearOnCancel=True
+        )
+        self.renderFileInput = Widgets.CueLabelLineEdit('Render Filename (Optional):')
+        self.renderFileInput.setVisible(False)
+        self.fileTypeSelector = Widgets.CueSelectPulldown(
+            'Render Filetype (Optional):', options=['','exr','jpg','png','tif'], multiselect=False
+        )
+        self.selectorLayout = QtWidgets.QHBoxLayout()
+        self.setupUi()
+        self.setupConnections()
+
+    def setupUi(self):
+        self.mainLayout.addWidget(self.arnoldFileInput)
+        self.mainLayout.addWidget(self.renderFolderInput)
+        self.mainLayout.addWidget(self.renderFileInput)
+        self.fileTypeSelector.toolButton.setFixedWidth(120)
+        self.selectorLayout.addWidget(self.fileTypeSelector)
+        self.selectorLayout.addStretch(1)
+        self.selectorLayout.setStretchFactor(self.fileTypeSelector, 0)
+        self.mainLayout.addLayout(self.selectorLayout)
+        self.renderFolderInput.setEnabled(False)
+        self.fileTypeSelector.setEnabled(False)
+        self.renderFileInput.setVisible(False)
+
+    def setupConnections(self):
+        self.arnoldFileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.arnoldFileInput.fileSelect.selectionChanged.connect(self.handleArnoldFileChange)
+        self.renderFolderInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.renderFolderInput.fileSelect.selectionChanged.connect(self.handleRenderFolderChange)
+        self.renderFileInput.lineEdit.textChanged.connect(self.dataChanged.emit)
+        self.fileTypeSelector.optionsMenu.triggered.connect(self.dataChanged.emit)
+        self.fileTypeSelector.optionsMenu.triggered.connect(self.setRenderFileName)
+
+    def handleRenderFolderChange(self):
+        self.renderFileInput.setVisible(bool(self.renderFolderInput.fileSelect.selected()))
+        self.setRenderFileName()
+
+    def setRenderFileName(self):
+        if self.arnoldFileInput.fileSelect.selected() and self.renderFolderInput.fileSelect.selected():
+            file_sequence = self.arnoldFileInput.fileSelect.selected()
+            file_sequence.setPadding('%0{}d'.format(file_sequence.zfill()))
+            if not self.fileTypeSelector.text():
+                self.fileTypeSelector.setChecked(['exr'])
+            path_template = '{{basename}}{{padding}}.{0}'.format(self.fileTypeSelector.text())
+            formatted_file_name = file_sequence.format(template=path_template)
+            self.renderFileInput.setText(formatted_file_name)
+
+    def handleArnoldFileChange(self):
+        if self.arnoldFileInput.fileSelect.selected():
+            self.renderFolderInput.setEnabled(True)
+            self.fileTypeSelector.setEnabled(True)
+            file_sequence = self.arnoldFileInput.fileSelect.selected()
+            self.parent().parent().parent().parent().frameBox.frameSpecInput.setText(
+                "{0}-{1}".format(file_sequence.start(), file_sequence.end())
+            )
+        else:
+            self.parent().parent().parent().parent().frameBox.frameSpecInput.setText("")
+            self.renderFolderInput.setEnabled(False)
+            self.fileTypeSelector.setEnabled(False)
+            self.renderFileInput.setVisible(False)
+        self.setRenderFileName()
+
+    def setCommandData(self, commandData):
+        self.arnoldFileInput.fileSelect.setSelected(commandData.get('arnoldFile', None))
+        self.renderFolderInput.fileSelect.setSelected(commandData.get('renderFolder', None))
+        self.renderFileInput.setText(commandData.get('renderFile', ''))
+        self.fileTypeSelector.setChecked(commandData.get('renderFileType', ''))
+
+    def getCommandData(self):
+        return_dict = {
+            'arnoldFile': self.arnoldFileInput.fileSelect.selected(),
+            'renderFolder': self.renderFolderInput.fileSelect.selected(),
+            'renderFile': self.renderFileInput.text(),
+            'renderFileType': self.fileTypeSelector.text(),
+        }
+        return return_dict
