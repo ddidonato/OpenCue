@@ -23,6 +23,7 @@ from outline.modules.shell import Shell
 
 from cuesubmit import Constants
 from cuesubmit import JobTypes
+from cuesubmit import Util
 
 import fileseq
 import uuid
@@ -204,8 +205,10 @@ def submitJob(jobData):
             raise ValueError('unrecognized layer type %s' % layerData.layerType)
         outline.add_layer(layer)
         lastLayer = layer
-
     if 'facility' in jobData:
         outline.set_facility(jobData['facility'])
 
-    return cuerun.launch(outline, use_pycuerun=False)
+    job = cuerun.launch(outline, use_pycuerun=False)
+    show = Util.getShow(jobData['show'])
+    show.getRootGroup().reparentJobs(job)
+    return job
