@@ -37,6 +37,13 @@ def getShows():
     return [show.name() for show in opencue.api.getShows()]
 
 
+def getShow(show_name):
+    """Get a show by name from cuebot."""
+    for show in opencue.api.getShows():
+        if show.name() == show_name:
+            return show
+
+
 def getAllocations():
     """Return a list of Allocations from cuebot."""
     return opencue.api.getAllocations()
