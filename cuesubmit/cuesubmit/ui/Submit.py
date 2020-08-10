@@ -111,6 +111,8 @@ class CueSubmitWidget(QtWidgets.QWidget):
             options=shows,
             multiselect=False,
             parent=self)
+        if Constants.DEFAULT_SHOW and Constants.DEFAULT_SHOW in shows:
+            self.showSelector.setChecked([Constants.DEFAULT_SHOW])
         self.shotInput = Widgets.CueLabelLineEdit(
             'Shot:',
             tooltip='Name of the shot associated with this submission.',
