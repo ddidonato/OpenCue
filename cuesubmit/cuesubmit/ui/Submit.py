@@ -155,6 +155,12 @@ class CueSubmitWidget(QtWidgets.QWidget):
             tooltip='Chunk frames by this value. Integers equal or greater than 1.',
             validators=[Validators.matchPositiveIntegers]
         )
+        self.coresChunkLayout = QtWidgets.QHBoxLayout()
+        self.versionSelector = Widgets.CueSelectPulldown(
+            'Version:',
+            emptyText='',
+            options=[''],
+            multiselect=False)
         self.dependSelector = Widgets.CueSelectPulldown(
             'Dependency Type:',
             emptyText='',
@@ -217,6 +223,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.limitsSelector.optionsMenu.triggered.connect(self.jobDataChanged)
         self.coresInput.lineEdit.textChanged.connect(self.jobDataChanged)
         self.chunkInput.lineEdit.textChanged.connect(self.jobDataChanged)
+        self.versionSelector.optionsMenu.triggered.connect(self.jobDataChanged)
         self.dependSelector.optionsMenu.triggered.connect(self.dependencyChanged)
 
     def setupUi(self):
@@ -246,10 +253,15 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.layerSettingsLayout.addWidget(self.jobTypeSelector, 1, 0)
         self.layerSettingsLayout.addWidget(self.servicesSelector, 1, 1)
         self.layerSettingsLayout.addWidget(self.limitsSelector, 1, 2)
-        self.coresInput.lineEdit.setFixedWidth(80)
-        self.layerSettingsLayout.addWidget(self.coresInput, 2, 0)
-        self.chunkInput.lineEdit.setFixedWidth(80)
-        self.layerSettingsLayout.addWidget(self.chunkInput, 2, 1)
+        self.layerSettingsLayout.addWidget(self.versionSelector, 2, 0)
+
+        self.coresInput.lineEdit.setFixedWidth(60)
+        self.chunkInput.lineEdit.setFixedWidth(60)
+        self.coresChunkLayout.addWidget(self.coresInput)
+        self.coresChunkLayout.addWidget(self.chunkInput)
+        self.coresChunkLayout.addStretch(1000)
+        self.layerSettingsLayout.addLayout(self.coresChunkLayout, 2, 1)
+
         self.layerSettingsLayout.addWidget(self.dependSelector, 2, 2)
         self.layerSettingsLayout.setHorizontalSpacing(12)
         self.layerSettingsLayout.setVerticalSpacing(4)
@@ -315,6 +327,9 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.limitsSelector.setChecked(layerObject.limits)
         self.coresInput.setText(str(layerObject.cores))
         self.chunkInput.setText(str(layerObject.chunk))
+        self.versionSelector.clearChecked()
+        self.versionSelector.setOptions(layerObject.applicationVersions)
+        self.versionSelector.setChecked([layerObject.applicationVersion])
         self.dependSelector.clearChecked()
         self.dependSelector.setChecked([layerObject.dependType])
         self.settingsWidget.setCommandData(layerObject.cmd)
@@ -333,6 +348,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
             layerRange=self.frameBox.frameSpecInput.text(),
             chunk=self.chunkInput.text(),
             cores=self.coresInput.text(),
+            applicationVersion=self.versionSelector.getChecked(),
             env=None,
             services=self.servicesSelector.getChecked(),
             limits=self.limitsSelector.getChecked(),

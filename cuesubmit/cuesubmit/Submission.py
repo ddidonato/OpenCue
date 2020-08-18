@@ -37,7 +37,7 @@ def buildMayaCmd(layerData):
     if not mayaFile:
         raise ValueError('No Maya File provided. Cannot submit job.')
     renderCommand = '{renderCmd} -r file -s {frameToken} -e {frameToken}'.format(
-        renderCmd=Constants.MAYA_RENDER_CMD, frameToken=Constants.FRAME_TOKEN)
+        renderCmd=layerData.renderCmd, frameToken=Constants.FRAME_TOKEN)
     if 'camera' in layerData.cmd:
         # If launched within maya, select a camera
         camera = layerData.cmd.get('camera')
@@ -57,7 +57,7 @@ def buildNukeCmd(layerData):
     if not nukeFile:
         raise ValueError('No Nuke file provided. Cannot submit job.')
     renderCommand = '{renderCmd} -F {frameToken} '.format(
-        renderCmd=Constants.NUKE_RENDER_CMD, frameToken=Constants.FRAME_TOKEN)
+        renderCmd=layerData.renderCmd, frameToken=Constants.FRAME_TOKEN)
     if writeNodes:
         renderCommand += '-X {} '.format(writeNodes)
     renderCommand += '-x {}'.format(nukeFile)
@@ -72,7 +72,7 @@ def buildBlenderCmd(layerData):
         raise ValueError('No Blender file provided. Cannot submit job.')
     
     renderCommand = '{renderCmd} -b -noaudio {blenderFile}'.format(
-        renderCmd=Constants.BLENDER_RENDER_CMD, blenderFile=blenderFile)
+        renderCmd=layerData.getRenderCommand(), blenderFile=blenderFile)
     if outputPath:
         renderCommand += ' -o {}'.format(outputPath)
     if outputFormat:
@@ -115,7 +115,7 @@ def buildArnoldCmd(layerData):
     input_file = input_file_sequence.format(template='{dirname}{basename}$currentFrame{extension}')
     render_command += 'currentFrame=$(printf "%0{0}d" "#IFRAME#");'.format(padding_length)
     render_command += '{renderCmd} -i "{inFile}"'.format(
-        renderCmd=Constants.config.get('ARNOLD_RENDER_CMD', 'kick'),
+        renderCmd=layerData.getRenderCommand(),
         inFile=input_file,
     )
 
@@ -177,9 +177,11 @@ def buildBlenderLayer(layerData, lastLayer):
     blenderCmd = buildBlenderCmd(layerData)
     return buildLayer(layerData, blenderCmd, lastLayer)
 
+
 def buildArnoldLayer(layerData, lastLayer):
     arnoldCmd = buildArnoldCmd(layerData)
     return buildLayer(layerData, arnoldCmd, lastLayer)
+
 
 def buildShellLayer(layerData, lastLayer):
     return buildLayer(layerData, layerData.cmd['commandTextBox'], lastLayer)

@@ -44,19 +44,30 @@ class LayerData(object):
         self.env = {}
         self.services = []
         self.limits = []
+        self.applicationVersion = None
+        self.applicationVersions = None
+        self.renderCommands = None
         self.dependType = DependType.Null
         self.dependsOn = None
         self.populateDefaultValues()
 
     def populateDefaultValues(self):
-        self.chunk = JobTypes.JobTypes.DEFAULT_CHUNK_MAP[self.layerType]
-        self.cores = JobTypes.JobTypes.DEFAULT_CORES_MAP[self.layerType]
-        self.services = []
-        if JobTypes.JobTypes.DEFAULT_SERVICE_MAP[self.layerType]:
-            self.services.append(JobTypes.JobTypes.DEFAULT_SERVICE_MAP[self.layerType])
+        if self.layerType in Constants.LAYER_TYPE_SETTINGS:
+            settings_to_use = Constants.LAYER_TYPE_SETTINGS[self.layerType]
+        else:
+            settings_to_use = Constants.LAYER_TYPE_SETTINGS["DEFAULT"]
+        self.chunk = settings_to_use.get("CHUNK", 1)
+        self.cores = settings_to_use.get("MIN_CORES", 1)
+        self.renderCommands = settings_to_use.get("RENDER_CMD", {"default": None})
+        self.applicationVersions = list(self.renderCommands.keys())
+        self.applicationVersion = self.applicationVersions[0]
+        self.services = settings_to_use.get("SERVICES", [])
 
     def __str__(self):
         return str(self.toDict())
+
+    def getRenderCommand(self):
+        return self.renderCommands[self.applicationVersion]
 
     def toDict(self):
         """Return a dictionary from the attributes."""
@@ -67,6 +78,7 @@ class LayerData(object):
             'layerRange': self.layerRange,
             'chunk': self.chunk,
             'cores': self.cores,
+            'applicationVersion': self.applicationVersion,
             'env': self.env,
             'services': self.services,
             'limits': self.limits,
@@ -76,15 +88,15 @@ class LayerData(object):
 
     @staticmethod
     def buildFactory(name=None, layerType=None, cmd=None, layerRange=None, chunk=None, cores=None,
-                     env=None, services=None, limits=None, dependType=None, dependsOn=None):
+                     applicationVersion=None, env=None, services=None, limits=None, dependType=None, dependsOn=None):
         """Build a new LayerData object with the given settings."""
         layerData = LayerData()
-        layerData.update(name, layerType, cmd, layerRange, chunk, cores, env, services, limits,
-                         dependType, dependsOn)
+        layerData.update(name, layerType, cmd, layerRange, chunk, cores, applicationVersion,
+                         env, services, limits, dependType, dependsOn)
         return layerData
 
     def update(self, name=None, layerType=None, cmd=None, layerRange=None, chunk=None, cores=None,
-               env=None, services=None, limits=None, dependType=None, dependsOn=None):
+               applicationVersion=None, env=None, services=None, limits=None, dependType=None, dependsOn=None):
         """Update this Layer with the provided settings."""
         if name is not None:
             self.name = name
@@ -96,6 +108,8 @@ class LayerData(object):
             self.chunk = chunk
         if cores is not None:
             self.cores = cores
+        if applicationVersion is not None and len(applicationVersion) > 0:
+            self.applicationVersion = applicationVersion[0]
         if env is not None:
             self.env = env
         if services is not None:

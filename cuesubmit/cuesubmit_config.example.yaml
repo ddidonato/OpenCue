@@ -3,29 +3,39 @@
 # the CUESUBMIT_CONFIG_FILE environment variable.
 # If this file is not found the defaults in Constants.py will be used.
 
-UI_NAME : "OPENCUESUBMIT"
-SUBMIT_APP_WINDOW_TITLE : "OpenCue Submit"
-MAYA_RENDER_CMD : "Render"
-NUKE_RENDER_CMD : "nuke"
-BLENDER_RENDER_CMD : "blender"
-ARNOLD_RENDER_CMD : "kick"
-FRAME_TOKEN : "#IFRAME#"
-DEFAULT_MIN_CORES : 1
-DEFAULT_MIN_CORES_MAYA : 1
-DEFAULT_MIN_CORES_NUKE : 1
-DEFAULT_MIN_CORES_BLENDER : 1
-DEFAULT_MIN_CORES_ARNOLD : 1
-DEFAULT_MIN_CORES_SHELL: 1
-DEFAULT_CHUNK : 1
-DEFAULT_CHUNK_MAYA : 1
-DEFAULT_CHUNK_NUKE : 1
-DEFAULT_CHUNK_BLENDER : 1
-DEFAULT_CHUNK_ARNOLD : 1
-DEFAULT_CHUNK_SHELL : 1
-DEFAULT_SERVICE_ARNOLD : "arnold"
-DEFAULT_SERVICE_BLENDER: "blender"
-DEFAULT_SERVICE_MAYA: "maya"
-DEFAULT_SERVICE_NUKE: "nuke"
-DEFAULT_SERVICE_SHELL: "shell"
-DEFAULT_LAYER_PREFIX : "Layer"
-DEFAULT_LAYER_TYPE : "Shell"
+UI_NAME: "OPENCUESUBMIT"
+SUBMIT_APP_WINDOW_TITLE: "OpenCue Submit"
+FRAME_TOKEN: "#IFRAME#"
+DEFAULT_LAYER_PREFIX: "Layer"
+DEFAULT_LAYER_TYPE: "Shell"
+DEFAULT_SHOW: "testing"
+
+LAYER_TYPE_SETTINGS:
+  DEFAULT:
+    CHUNK: 1
+    MIN_CORES: 1
+    SERVICES: ['shell']
+  Maya:
+    RENDER_CMD: "Render"
+    CHUNK: 1
+    MIN_CORES: 8
+    SERVICES: ['maya']
+  Nuke:
+    RENDER_CMD: "nuke"
+    CHUNK: 1
+    MIN_CORES: 1
+    SERVICES: ['nuke']
+  Blender:
+    RENDER_CMD:
+      2.83.3: "/usr/local/blender-2.83.3/blender"
+      2.83: "/usr/local/blender-2.83/blender"
+      2.82a: "/usr/local/blender-2.82a/blender"
+      2.9: "/usr/local/blender-2.9/blender"
+    CHUNK: 1
+    MIN_CORES: 16
+    SERVICES: ['blender']
+  Arnold:
+    RENDER_CMD: "kick"
+    CHUNK: 1
+    MIN_CORES: 16
+    SERVICES: ['arnold']
