@@ -16,26 +16,29 @@ LAYER_TYPE_SETTINGS:
     MIN_CORES: 1
     SERVICES: ['shell']
   Maya:
-    RENDER_CMD: "Render"
+    RENDER_CMD:
+      default: "Render"
     CHUNK: 1
     MIN_CORES: 8
     SERVICES: ['maya']
   Nuke:
-    RENDER_CMD: "nuke"
+    RENDER_CMD:
+      default: "nuke"
     CHUNK: 1
     MIN_CORES: 1
     SERVICES: ['nuke']
   Blender:
     RENDER_CMD:
-      2.83.3: "/usr/local/blender-2.83.3/blender"
-      2.83: "/usr/local/blender-2.83/blender"
-      2.82a: "/usr/local/blender-2.82a/blender"
-      2.9: "/usr/local/blender-2.9/blender"
+      "2.83.3": "/usr/local/blender-2.83.3/blender"
+      "2.83": "/usr/local/blender-2.83/blender"
+      "2.82a": "/usr/local/blender-2.82a/blender"
+      "2.9": "/usr/local/blender-2.9/blender"
     CHUNK: 1
     MIN_CORES: 16
     SERVICES: ['blender']
   Arnold:
-    RENDER_CMD: "kick"
+    RENDER_CMD:
+      default: "kick"
     CHUNK: 1
     MIN_CORES: 16
     SERVICES: ['arnold']
