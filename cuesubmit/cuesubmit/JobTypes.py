@@ -42,30 +42,6 @@ class JobTypes(object):
         SHELL: SettingsWidgets.ShellSettings,
     }
 
-    DEFAULT_CORES_MAP = {
-        ARNOLD: Constants.DEFAULT_MIN_CORES_ARNOLD,
-        BLENDER: Constants.DEFAULT_MIN_CORES_BLENDER,
-        MAYA: Constants.DEFAULT_MIN_CORES_MAYA,
-        NUKE: Constants.DEFAULT_MIN_CORES_NUKE,
-        SHELL: Constants.DEFAULT_MIN_CORES,
-    }
-
-    DEFAULT_CHUNK_MAP = {
-        ARNOLD: Constants.DEFAULT_CHUNK_ARNOLD,
-        BLENDER: Constants.DEFAULT_CHUNK_BLENDER,
-        MAYA: Constants.DEFAULT_CHUNK_MAYA,
-        NUKE: Constants.DEFAULT_CHUNK_NUKE,
-        SHELL: Constants.DEFAULT_CHUNK,
-    }
-
-    DEFAULT_SERVICE_MAP = {
-        ARNOLD: Constants.DEFAULT_SERVICE_ARNOLD,
-        BLENDER: Constants.DEFAULT_SERVICE_BLENDER,
-        MAYA: Constants.DEFAULT_SERVICE_MAYA,
-        NUKE: Constants.DEFAULT_SERVICE_NUKE,
-        SHELL: Constants.DEFAULT_SERVICE_SHELL,
-    }
-
     def __init__(self):
         pass
 
