@@ -257,6 +257,7 @@ class CueSubmitWidget(QtWidgets.QWidget):
 
         self.coresInput.lineEdit.setFixedWidth(60)
         self.chunkInput.lineEdit.setFixedWidth(60)
+        self.coresChunkLayout.setSpacing(10)
         self.coresChunkLayout.addWidget(self.coresInput)
         self.coresChunkLayout.addWidget(self.chunkInput)
         self.coresChunkLayout.addStretch(1000)
