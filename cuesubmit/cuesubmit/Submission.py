@@ -211,6 +211,10 @@ def submitJob(jobData):
         outline.set_facility(jobData['facility'])
 
     job = cuerun.launch(outline, use_pycuerun=False)
+    for layer in job[0].getLayers():
+        for outline_layer in outline.get_layers():
+            if outline_layer.get_name().lower() == layer.name().lower():
+                layer.setMinCores(outline_layer.get_arg('threads')*100)
     show = Util.getShow(jobData['show'])
     show.getRootGroup().reparentJobs(job)
     return job
