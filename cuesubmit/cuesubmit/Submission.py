@@ -35,14 +35,14 @@ def buildMayaCmd(layerData):
     mayaFile = layerData.cmd.get('mayaFile')
     mayaProject = layerData.cmd.get('mayaProject')
     if not mayaFile:
-        raise ValueError('No Maya File provided. Cannot submit job.')
+        raise ValueError('No Maya File provided')
     renderCommand = '{renderCmd} -r file -s {frameToken} -e {frameToken}'.format(
-        renderCmd=layerData.renderCmd, frameToken=Constants.FRAME_TOKEN)
+        renderCmd=layerData.getRenderCommand(), frameToken=Constants.FRAME_TOKEN)
     if 'camera' in layerData.cmd:
         # If launched within maya, select a camera
         camera = layerData.cmd.get('camera')
         if not camera:
-            raise ValueError('No camera selected. Cannot submit job.')
+            raise ValueError('No camera selected')
         renderCommand += ' -cam {}'.format(camera)
     if mayaProject:
         renderCommand += ' -proj \'{}\''.format(mayaProject)
@@ -55,9 +55,9 @@ def buildNukeCmd(layerData):
     writeNodes = layerData.cmd.get('writeNodes')
     nukeFile = layerData.cmd.get('nukeFile')
     if not nukeFile:
-        raise ValueError('No Nuke file provided. Cannot submit job.')
+        raise ValueError('No Nuke file provided')
     renderCommand = '{renderCmd} -F {frameToken} '.format(
-        renderCmd=layerData.renderCmd, frameToken=Constants.FRAME_TOKEN)
+        renderCmd=layerData.getRenderCommand(), frameToken=Constants.FRAME_TOKEN)
     if writeNodes:
         renderCommand += '-X {} '.format(writeNodes)
     renderCommand += '-x {}'.format(nukeFile)
@@ -69,7 +69,7 @@ def buildBlenderCmd(layerData):
     outputPath = layerData.cmd.get('outputPath')
     outputFormat = layerData.cmd.get('outputFormat')
     if not blenderFile:
-        raise ValueError('No Blender file provided. Cannot submit job.')
+        raise ValueError('No Blender file provided')
     
     renderCommand = '{renderCmd} -b -noaudio {blenderFile}'.format(
         renderCmd=layerData.getRenderCommand(), blenderFile=blenderFile)

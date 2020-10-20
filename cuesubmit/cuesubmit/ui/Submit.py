@@ -135,6 +135,8 @@ class CueSubmitWidget(QtWidgets.QWidget):
             multiselect=False
         )
         self.jobTypeSelector.setChecked(self.primaryWidgetType)
+        if Constants.DEFAULT_LAYER_TYPE not in jobTypes:
+            Constants.DEFAULT_LAYER_TYPE = jobTypes[0]
         self.servicesSelector = Widgets.CueSelectPulldown(
             'Services:',
             options=Util.getServices()
@@ -526,12 +528,10 @@ class CueSubmitWidget(QtWidgets.QWidget):
         self.updateCompleters()
         try:
             jobs = Submission.submitJob(jobData)
-        except opencue.exception.CueException as e:
-            message = "Failed to submit job!\n" + str(e)
-            Widgets.CueMessageBox(message, title="Failed Job Submission", parent=self).show()
-            raise e
-
-        message = "Submitted Job to OpenCue."
+        except Exception as e:
+            message = "Failed to submit job\n" + str(e)
+            return self.errorInJobData(message)
+        message = "Submitted Job to OpenCue"
         for job in jobs:
             message += "\nJob ID: {}\nJob Name: {}".format(job.id(), job.name())
         Widgets.CueMessageBox(message, title="Submitted Job Data", parent=self).show()
