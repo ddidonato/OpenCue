@@ -46,7 +46,6 @@ sys.path.insert(0,
 from cuesubmit import Constants
 from cuesubmit import JobTypes
 from cuesubmit.ui import SettingsWidgets
-from cuesubmit.ui import Style
 from cuesubmit.ui import Submit
 
 log = logging.getLogger(Constants.UI_NAME)
@@ -54,18 +53,24 @@ window = None
 
 
 class MayaJobTypes(JobTypes.JobTypes):
-    SHELL = 'Shell'
     MAYA = 'Maya'
-    NUKE = 'Nuke'
 
     SETTINGS_MAP = {
-        SHELL: SettingsWidgets.ShellSettings,
         MAYA: SettingsWidgets.InMayaSettings,
-        NUKE: SettingsWidgets.BaseNukeSettings
     }
 
     def __init__(self):
         super(MayaJobTypes, self).__init__()
+
+    @classmethod
+    def build(cls, jobType, *args, **kwargs):
+        """Factory method for creating a settings widget."""
+        return cls.SETTINGS_MAP[jobType](*args, **kwargs)
+
+    @classmethod
+    def types(cls):
+        """return a list of types available."""
+        return [cls.MAYA]
 
 
 class CueSubmitMainWindow(QtWidgets.QMainWindow):
@@ -83,7 +88,6 @@ class CueSubmitMainWindow(QtWidgets.QMainWindow):
             cameras=getCameras(),
             parent=self
         )
-        self.setStyleSheet(Style.MAIN_WINDOW)
         self.setCentralWidget(self.submitWidget)
         self.setWindowTitle(name)
         self.setMinimumWidth(450)

@@ -45,14 +45,21 @@ class InMayaSettings(BaseSettingsWidget):
         )
         if self._project:
             self.mayaProjectInput.fileSelect.setSelected(self._project)
-        self.cameraSelector = Widgets.CueSelectPulldown('Render Cameras', options=cameras)
+        self.cameraSelector = Widgets.CueSelectPulldown('Render Cameras', options=cameras, emptyText='')
         self.selectorLayout = QtWidgets.QHBoxLayout()
-        super(InMayaSettings, self).__init__(parent=parent)
+        self.setupUi()
+        self.setupConnections()
 
     def setupUi(self):
-        super(InMayaSettings, self).setupUi()
+        self.mainLayout.addWidget(self.mayaFileInput)
+        self.mainLayout.addWidget(self.mayaProjectInput)
         self.selectorLayout.addWidget(self.cameraSelector)
         self.mainLayout.addLayout(self.selectorLayout)
+
+    def setupConnections(self):
+        self.mayaFileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.mayaProjectInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.cameraSelector.optionsMenu.triggered.connect(self.dataChanged.emit)
 
     def setCommandData(self, commandData):
         self.mayaFileInput.fileSelect.setSelected(commandData.get('mayaFile', self._filename))
@@ -91,8 +98,8 @@ class BaseMayaSettings(BaseSettingsWidget):
 
     def getCommandData(self):
         return {
-            'mayaFile': self.mayaFileInput.selected(),
-            'mayaProject': self.mayaProjectInput.selected(),
+            'mayaFile': self.mayaFileInput.fileSelect.selected(),
+            'mayaProject': self.mayaProjectInput.fileSelect.selected(),
         }
 
 
@@ -119,6 +126,10 @@ class InNukeSettings(BaseSettingsWidget):
     def setCommandData(self, commandData):
         self.fileInput.fileSelect.setSelected(commandData.get('nukeFile', None))
         self.writeNodeSelector.setChecked(commandData.get('writeNodes', '').split(','))
+
+    def setupConnections(self):
+        self.fileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.writeNodeSelector.optionsMenu.triggered.connect(self.dataChanged.emit)
 
     def getCommandData(self):
         return {
@@ -207,6 +218,7 @@ class BaseBlenderSettings(BaseSettingsWidget):
     def setupConnections(self):
         self.fileInput.fileSelect.selectionChanged.connect(self.dataChanged.emit)
         self.outputPath.fileSelect.selectionChanged.connect(self.dataChanged.emit)
+        self.outputSelector.optionsMenu.triggered.connect(self.dataChanged.emit)
 
     def setCommandData(self, commandData):
         self.fileInput.fileSelect.setSelected(commandData.get('nukeFile', None))
