@@ -399,6 +399,10 @@ class Machine(object):
             self.__renderHost.tags.append("64bit")
         self.__renderHost.tags.append(os.uname()[2].replace(".EL.spi", "").replace("smp", ""))
 
+        if rqd.rqconstants.ADDITIONAL_TAGS:
+            for tag in rqd.rqconstants.ADDITIONAL_TAGS.split(','):
+                self.__renderHost.tags.append(tag)
+
     def testInitMachineStats(self, pathCpuInfo):
         self.__initMachineStats(pathCpuInfo=pathCpuInfo)
         return self.__renderHost, self.__coreInfo

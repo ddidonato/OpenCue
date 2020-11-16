@@ -73,6 +73,9 @@ class FrameAttendantThread(threading.Thread):
         """Define the environmental variables for the frame"""
         # If linux specific, they need to move into self.runLinux()
         self.frameEnv = {}
+        if rqd.rqconstants.RQD_ADD_MACHINE_ENV:
+            for key in os.environ:
+                self.frameEnv[key] = os.environ.get(key)
         self.frameEnv["PATH"] = self.rqCore.machine.getPathEnv()
         self.frameEnv["TERM"] = "unknown"
         self.frameEnv["TZ"] = self.rqCore.machine.getTimezone()
@@ -127,6 +130,8 @@ class FrameAttendantThread(threading.Thread):
                                            'rqd-cmd-%s-%s' % (self.runFrame.frame_id, time.time()))
             rqexe = open(commandFile, "w")
             self._tempLocations.append(commandFile)
+            if platform.system() == "Linux":
+                rqexe.write('#!/bin/bash\n')
             rqexe.write(command)
             rqexe.close()
             os.chmod(commandFile, 0o777)
@@ -248,7 +253,6 @@ class FrameAttendantThread(threading.Thread):
             rqd.rqutil.permissionsHigh()
             rqd.rqutil.checkAndCreateUser(runFrame.user_name)
             rqd.rqutil.permissionsLow()
-
         tempStatFile = "%srqd-stat-%s-%s" % (self.rqCore.machine.getTempPath(),
                                              frameInfo.frameId,
                                              time.time())
@@ -263,8 +267,11 @@ class FrameAttendantThread(threading.Thread):
 
         rqd.rqutil.permissionsHigh()
         try:
-            tempCommand += ["/bin/su", runFrame.user_name, rqd.rqconstants.SU_ARGUEMENT,
-                            '"' + self._createCommandFile(runFrame.command) + '"']
+            if rqd.rqconstants.RQD_RUN_AS_USER:
+                tempCommand = ["/bin/su", runFrame.user_name, rqd.rqconstants.SU_ARGUEMENT,
+                               '"' + self._createCommandFile(runFrame.command) + '"']
+            else:
+                tempCommand = [self._createCommandFile(runFrame.command)]
 
             # Actual cwd is set by /shots/SHOW/home/perl/etc/qwrap.cuerun
             frameInfo.forkedCommand = subprocess.Popen(tempCommand,
@@ -358,8 +365,11 @@ class FrameAttendantThread(threading.Thread):
 
         rqd.rqutil.permissionsHigh()
         try:
-            tempCommand = ["/usr/bin/su", frameInfo.runFrame.user_name, "-c", '"' +
-                           self._createCommandFile(frameInfo.runFrame.command) + '"']
+            if rqd.rqconstants.RQD_RUN_AS_USER:
+                tempCommand = ["/usr/bin/su", frameInfo.runFrame.user_name, "-c", '"' +
+                               self._createCommandFile(frameInfo.runFrame.command) + '"']
+            else:
+                tempCommand = [self._createCommandFile(frameInfo.runFrame.command)]
 
             frameInfo.forkedCommand = subprocess.Popen(tempCommand,
                                                        env=self.frameEnv,

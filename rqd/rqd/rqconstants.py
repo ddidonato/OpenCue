@@ -67,6 +67,9 @@ RQD_RETRY_STARTUP_CONNECT_DELAY = 30
 RQD_RETRY_CRITICAL_REPORT_DELAY = 30
 RQD_USE_IP_AS_HOSTNAME = True
 RQD_CREATE_USER_IF_NOT_EXISTS = True
+RQD_RUN_AS_USER = True
+RQD_ADD_MACHINE_ENV = False
+ADDITIONAL_TAGS = None
 
 KILL_SIGNAL = 9
 if platform.system() == 'Linux':
@@ -186,6 +189,14 @@ try:
             DEFAULT_FACILITY = config.get(__section, "DEFAULT_FACILITY")
         if config.has_option(__section, "LAUNCH_FRAME_USER_GID"):
             LAUNCH_FRAME_USER_GID = config.getint(__section, "LAUNCH_FRAME_USER_GID")
+        if config.has_option(__section, "RQD_CREATE_USER_IF_NOT_EXISTS"):
+            RQD_CREATE_USER_IF_NOT_EXISTS = config.getboolean(__section, "RQD_CREATE_USER_IF_NOT_EXISTS")
+        if config.has_option(__section, "RQD_RUN_AS_USER"):
+            RQD_RUN_AS_USER = config.getboolean(__section, "RQD_RUN_AS_USER")
+        if config.has_option(__section, "RQD_ADD_MACHINE_ENV"):
+            RQD_ADD_MACHINE_ENV = config.getboolean(__section, "RQD_ADD_MACHINE_ENV")
+        if config.has_option(__section, "ADDITIONAL_TAGS"):
+            ADDITIONAL_TAGS = config.get(__section, "ADDITIONAL_TAGS")
 except Exception as e:
     logging.warning("Failed to read values from config file %s due to %s at %s" % (CONFIG_FILE, e, traceback.extract_tb(sys.exc_info()[2])))
 
